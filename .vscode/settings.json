@@ -1,0 +1,25 @@
+{
+  "files.associations": {
+    "*.txt": "plaintext",
+    "*.inc": "wla-dx-asm",
+    "*.lib": "wla-dx-asm",
+    "*.h": "c"
+  },
+  "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+  "C_Cpp.default.includePath": [
+    "./_h",
+    "/usr/local/share/sdcc/include",
+    "/usr/local/share/sdcc/include/sms",
+    "./src",
+    "./src/**",
+    "./src/themes/**"
+  ],
+  "C_Cpp.default.defines": [
+    "USEPSGLIB",
+    "THIS_BANK=-1",
+    "__banked="
+  ],
+  "[c]": {
+    "editor.suggest.insertMode": "insert"
+  }
+}

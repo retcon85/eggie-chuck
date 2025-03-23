@@ -1,0 +1,9 @@
+build/
+*.lst
+.DS_Store
+archive/
+assets/dump/
+*.generated.*
+*.csv
+*.ods
+.~lock*
