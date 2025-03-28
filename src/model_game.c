@@ -6,7 +6,7 @@ struct player_game_t *pg;
 
 uint8_t get_ready_counter = 0;
 
-static void reset_field(uint8_t field[], uint8_t size, uint8_t msd)
+void reset_field(uint8_t field[], uint8_t size, uint8_t msd)
 {
   for (uint8_t i = 0; i < size - 1; i++, field++)
   {
@@ -48,11 +48,6 @@ void reset_bonus(uint8_t msdigit)
 {
   pg->bonus_exhausted = false;
   reset_field(pg->bonus, sizeof(pg->bonus), msdigit);
-}
-
-static inline void reset_time(void)
-{
-  reset_field(pg->time, sizeof(pg->time), 9);
 }
 
 void load_level(void)
@@ -115,18 +110,18 @@ void load_level(void)
       }
       break;
     case 'P':
-      pg->player_initial_pos.x = x * 8;
-      pg->player_initial_pos.y = y * 8;
+      pg->player.initial_x = x * 8;
+      pg->player.initial_y = y * 8;
       break;
     case 'B':
-      pg->birds[pg->bird_count].x = x * 8;
-      pg->birds[pg->bird_count].y = y * 8;
+      pg->birds[pg->bird_count].initial_x = x * 8;
+      pg->birds[pg->bird_count].initial_y = y * 8;
       pg->bird_count++;
       break;
     case 'v':
       pg->elevator_enabled = true;
-      pg->elevator_pos.x = x * 8;
-      pg->elevator_pos.y = y * 8;
+      pg->elevator_pos_x = x * 8;
+      pg->elevator_pos_y = y * 8;
       break;
     }
     cmd = *(c++);
@@ -160,22 +155,37 @@ void model_game_init(char *level_data[], uint8_t level_count)
   model_game_select_player(0);
 }
 
-void model_game_select_player(uint8_t player)
+static inline void reset_time(void)
 {
-  get_ready_counter = GET_READY_SCREEN_TIMEOUT;
-  m.render_mask = VIEW_GAME_SHOW_GET_READY_SCREEN | VIEW_GAME_WAIT;
-  m.current_player = player;
+  reset_field(pg->time, sizeof(pg->time), 9);
+}
+
+void restart_current_level(void)
+{
   m.audio_tone = 0;
-  pg = &m.player_games[player];
   pg->player.is_jumping = false;
   pg->player.is_climbing = false;
-  pg->player.x = pg->player_initial_pos.x;
-  pg->player.y = pg->player_initial_pos.y;
+  pg->player.x = pg->player.initial_x;
+  pg->player.y = pg->player.initial_y;
   pg->player.vx = 0;
   pg->player.vy = 0;
+  for (uint8_t i = 0; i < pg->bird_count; i++)
+  {
+    pg->birds[i].x = pg->birds[i].initial_x;
+    pg->birds[i].y = pg->birds[i].initial_y;
+  }
   reset_time();
 
   model_game_tick(); // initial tick to calculate surface!
+}
+
+void model_game_select_player(uint8_t player)
+{
+  pg = &m.player_games[player];
+  get_ready_counter = GET_READY_SCREEN_TIMEOUT;
+  m.render_mask = VIEW_GAME_SHOW_GET_READY_SCREEN | VIEW_GAME_WAIT;
+  m.current_player = player;
+  restart_current_level();
 }
 
 void player_game_over(void)

@@ -10,6 +10,8 @@ void player_game_over(void);
 bool update_field(uint8_t field[], uint8_t size, int8_t delta);
 void load_level(void);
 void next_player(void);
+void reset_field(uint8_t field[], uint8_t size, uint8_t msd);
+void restart_current_level(void);
 
 static uint8_t time_counter = 0;
 static uint8_t bonus_counter = 0;
@@ -69,7 +71,7 @@ static void next_level(void)
   }
   pg->level++;
   load_level();
-  model_game_select_player(m.current_player);
+  restart_current_level();
 }
 
 static void collect_egg(void)
@@ -155,21 +157,21 @@ inline void move_elevators(void)
   bool on_elevator = false;
   if (pg->elevator_enabled)
   {
-    uint8_t elevator_y = pg->elevator_pos.y;
+    uint8_t elevator_y = pg->elevator_pos_y;
     if (time_counter % 2 == 0)
     {
-      pg->elevator_pos.y -= ELEVATOR_SPEED;
+      pg->elevator_pos_y -= ELEVATOR_SPEED;
     }
 
-    if (pg->player.x >= pg->elevator_pos.x - 6 &&     // !TODO:
-        pg->player.x <= pg->elevator_pos.x + 24 - 12) // !TODO:
+    if (pg->player.x >= pg->elevator_pos_x - 6 &&     // !TODO:
+        pg->player.x <= pg->elevator_pos_x + 24 - 12) // !TODO:
     {
       for (uint8_t i = 0; i < 2; i++, elevator_y -= 112) // !TODO:
       {
         if (pg->player.y >= elevator_y &&
             pg->player.y <= elevator_y + 4)
         {
-          pg->player.y = pg->elevator_pos.y - (i ? 112 : 0); // !TODO:
+          pg->player.y = pg->elevator_pos_y - (i ? 112 : 0); // !TODO:
           pg->player.is_on_elevator = true;
         };
       }

@@ -386,19 +386,19 @@ void view_game_tick(void)
   }
   if (pg->elevator_enabled)
   {
-    uint8_t y = pg->elevator_pos.y;
+    uint8_t y = pg->elevator_pos_y;
     if (y > 16 && y < 192)
     {
-      SMS_addSprite(pg->elevator_pos.x, y, TILE_ELEVATOR);
-      SMS_addSprite(pg->elevator_pos.x + 8, y, TILE_ELEVATOR + 2);
-      SMS_addSprite(pg->elevator_pos.x + 16, y, TILE_ELEVATOR + 4);
+      SMS_addSprite(pg->elevator_pos_x, y, TILE_ELEVATOR);
+      SMS_addSprite(pg->elevator_pos_x + 8, y, TILE_ELEVATOR + 2);
+      SMS_addSprite(pg->elevator_pos_x + 16, y, TILE_ELEVATOR + 4);
     }
     y -= 112;
     if (y > 16 && y < 192)
     {
-      SMS_addSprite(pg->elevator_pos.x, y, TILE_ELEVATOR);
-      SMS_addSprite(pg->elevator_pos.x + 8, y, TILE_ELEVATOR + 2);
-      SMS_addSprite(pg->elevator_pos.x + 16, y, TILE_ELEVATOR + 4);
+      SMS_addSprite(pg->elevator_pos_x, y, TILE_ELEVATOR);
+      SMS_addSprite(pg->elevator_pos_x + 8, y, TILE_ELEVATOR + 2);
+      SMS_addSprite(pg->elevator_pos_x + 16, y, TILE_ELEVATOR + 4);
     }
   }
 

@@ -48,20 +48,10 @@
 #define AUDIO_NOISE_PICKUP 0x04
 #define AUDIO_STEP 3
 
-struct upos_t
-{
-  uint8_t x;
-  uint8_t y;
-};
-
-struct spos_t
-{
-  int8_t x;
-  int8_t y;
-};
-
 struct character_t
 {
+  uint8_t initial_x;
+  uint8_t initial_y;
   uint8_t x;
   uint8_t y;
   int8_t vx;
@@ -79,14 +69,14 @@ struct player_game_t
   uint8_t score[3];
   uint8_t level;
   uint8_t lives;
-  struct upos_t player_initial_pos;
   struct character_t player;
   struct character_t birds[MAX_BIRDS];
   uint8_t bird_count;
   uint8_t screen_map[SCREEN_MAP_HEIGHT][SCREEN_MAP_WIDTH];
   uint8_t egg_count;
   bool elevator_enabled;
-  struct upos_t elevator_pos;
+  uint8_t elevator_pos_x;
+  uint8_t elevator_pos_y;
   uint8_t time[2];
   uint8_t bonus[2];
   bool bonus_exhausted;
