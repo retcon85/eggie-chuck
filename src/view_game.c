@@ -5,8 +5,8 @@
 #include "view_game.h"
 #include "model_game.h"
 
-#define TILESET_START 55
-#define SPIRTES_START 256
+#define TILESET_START 41
+#define SPRITES_START 256
 #define TILE_BLANK (TILESET_START + 0)
 #define TILE_PLATFORM (TILESET_START + 1)
 #define TILE_LADDER (TILESET_START + 3)
@@ -24,9 +24,11 @@
 #define TILE_TEXT_NUMBERS (TILE_TEXT_TIME + 2)
 #define TILE_TEXT_SINGLE_NUMBERS (TILE_TEXT_NUMBERS + 100)
 #define TILE_GET_READY_TEXT (TILESET_START + 167)
-#define TILE_PLAYER (SPIRTES_START + 0)
-#define TILE_ELEVATOR (SPIRTES_START + 36)
-#define TILE_BIRD (SPIRTES_START + 42)
+#define TILE_GAME_OVER_TEXT (TILE_GET_READY_TEXT + 14)
+#define TILE_PLAYER_TEXT (TILE_GAME_OVER_TEXT + 14)
+#define TILE_PLAYER (SPRITES_START + 0)
+#define TILE_ELEVATOR (SPRITES_START + 36)
+#define TILE_BIRD (SPRITES_START + 42)
 
 static void render_field(uint8_t field[], uint8_t size, bool zero_pad)
 {
@@ -223,7 +225,7 @@ void view_game_tick(void)
   // {
   //   SMS_setBackdropColor(0);
   // }
-  if (m.render_mask & VIEW_GAME_SHOW_GET_READY_SCREEN)
+  if ((m.render_mask & 0x01f) == VIEW_GAME_SHOW_GET_READY_SCREEN)
   {
     SMS_displayOff();
     SMS_initSprites();
@@ -250,6 +252,7 @@ void view_game_tick(void)
     {
       SMS_setTile(t++);
     }
+    t = TILE_PLAYER_TEXT;
     SMS_setNextTileatXY(9, 13);
     // P l a y e r
     for (uint8_t i = 0; i < 12; i++)
@@ -265,6 +268,61 @@ void view_game_tick(void)
     SMS_setTile(t);
     SMS_displayOn();
     m.render_mask &= ~VIEW_GAME_SHOW_GET_READY_SCREEN;
+    return;
+  }
+
+  if ((m.render_mask & 0x01f) == VIEW_GAME_SHOW_GET_GAME_OVER_OVERLAY)
+  {
+    SMS_initSprites();
+    SMS_copySpritestoSAT();
+    for (uint8_t j = 0; j < 5; j++)
+    {
+      SMS_setNextTileatXY(7, j + 9);
+      for (uint8_t i = 0; i < 19; i++)
+      {
+        SMS_setTile(TILE_BLANK);
+      }
+    }
+    SMS_setNextTileatXY(8, 10);
+    unsigned int t = TILE_GAME_OVER_TEXT;
+    // G a m e
+    for (uint8_t i = 0; i < 8; i++)
+    {
+      SMS_setTile(t++);
+    }
+    // (space)
+    SMS_setTile(TILE_BLANK);
+    SMS_setTile(TILE_BLANK);
+    // O v
+    SMS_setTile(t++);
+    SMS_setTile(t++);
+    SMS_setTile(t++);
+    SMS_setTile(t++);
+    // e
+    SMS_setTile(TILE_GAME_OVER_TEXT + 6);
+    SMS_setTile(TILE_GAME_OVER_TEXT + 7);
+    // r
+    SMS_setTile(t++);
+    SMS_setTile(t++);
+    // (space)
+    SMS_setTile(TILE_BLANK);
+    SMS_setTile(TILE_BLANK);
+    t = TILE_PLAYER_TEXT;
+    SMS_setNextTileatXY(9, 13);
+    // P l a y e r
+    for (uint8_t i = 0; i < 12; i++)
+    {
+      SMS_setTile(t++);
+    }
+    // (space)
+    SMS_setTile(TILE_BLANK);
+    SMS_setTile(TILE_BLANK);
+    // (player number)
+    t += 2 * m.current_player;
+    SMS_setTile(t++);
+    SMS_setTile(t);
+    m.render_mask &= ~VIEW_GAME_SHOW_GET_GAME_OVER_OVERLAY;
+    return;
   }
 
   if (m.render_mask & VIEW_GAME_WAIT)

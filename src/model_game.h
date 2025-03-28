@@ -8,6 +8,7 @@
 #define VIEW_GAME_RENDER_SCORELINE 2
 #define VIEW_GAME_RENDER_PICKUP 4
 #define VIEW_GAME_SHOW_GET_READY_SCREEN 8
+#define VIEW_GAME_SHOW_GET_GAME_OVER_OVERLAY 9
 #define VIEW_GAME_WAIT 128
 
 #define SCREEN_MAP_WIDTH 32
@@ -44,7 +45,7 @@
 #define AUDIO_TONE_JUMPING 0x69
 #define AUDIO_TONE_FALLING 0xc8
 #define AUDIO_NOISE_BONUS_TRANSFER 0x04
-#define AUDIO_NOISE_PICKUP 0x07
+#define AUDIO_NOISE_PICKUP 0x04
 #define AUDIO_STEP 3
 
 struct upos_t
@@ -89,6 +90,7 @@ struct player_game_t
   uint8_t time[2];
   uint8_t bonus[2];
   bool bonus_exhausted;
+  bool game_over;
 };
 
 struct game_model_t
@@ -101,6 +103,7 @@ struct game_model_t
   uint8_t audio_tone;
   bool audio_noise;
   struct player_game_t player_games[MAX_PLAYERS];
+  bool reset;
 };
 
 void model_game_init(char *level_data[], uint8_t level_count);

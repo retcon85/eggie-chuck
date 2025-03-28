@@ -6,33 +6,22 @@ extern struct game_model_t m;
 extern struct player_game_t *pg;
 
 void reset_bonus(uint8_t msdigit);
-void game_over(void);
+void player_game_over(void);
 bool update_field(uint8_t field[], uint8_t size, int8_t delta);
 void load_level(void);
+void next_player(void);
 
 static uint8_t time_counter = 0;
 static uint8_t bonus_counter = 0;
 static uint8_t bird_counter = 0;
 extern uint8_t get_ready_counter;
 
-static void next_player(void)
-{
-  if (m.current_player == m.player_count - 1)
-  {
-    model_game_select_player(0);
-  }
-  else
-  {
-    model_game_select_player(m.current_player + 1);
-  }
-}
-
 static void life_over(void)
 {
   m.audio_tone = 0;
   if (pg->lives == 0)
   {
-    game_over();
+    player_game_over();
     return;
   }
 
@@ -74,7 +63,7 @@ static void next_level(void)
 {
   if (pg->level == m.level_count - 1)
   {
-    game_over();
+    player_game_over();
     return;
   }
   pg->level++;
@@ -109,7 +98,7 @@ inline void update_counters(void)
   if (get_ready_counter > 0)
   {
     get_ready_counter--;
-    if (get_ready_counter == 0)
+    if (get_ready_counter == 0 && !pg->game_over)
     {
       m.render_mask = VIEW_GAME_RENDER_FULL_REDRAW | VIEW_GAME_RENDER_SCORELINE;
     }
@@ -352,8 +341,11 @@ inline void move_player(void)
   if (!pg->player.is_climbing && pg->player.vx != 0 && -pg->player.vx < pg->player.x)
   {
     pg->player.x += pg->player.vx;
-    m.audio_noise = false;
-    m.audio_tone = AUDIO_TONE_WALKING;
+    if (!m.audio_tone)
+    {
+      m.audio_noise = false;
+      m.audio_tone = AUDIO_TONE_WALKING;
+    }
   }
   // check right bounds
   if (pg->player.x > (256 - 16)) // !TODO: extract define
@@ -374,15 +366,21 @@ inline void move_player(void)
     }
     else if (pg->player.vy < 0)
     {
-      m.audio_noise = false;
-      m.audio_tone = audio_tone;
-      audio_tone -= AUDIO_STEP;
+      if (!m.audio_tone)
+      {
+        m.audio_noise = false;
+        m.audio_tone = audio_tone;
+        audio_tone -= AUDIO_STEP;
+      }
     }
     else
     {
-      m.audio_noise = false;
-      m.audio_tone = audio_tone;
-      audio_tone += AUDIO_STEP;
+      if (!m.audio_tone)
+      {
+        m.audio_noise = false;
+        m.audio_tone = audio_tone;
+        audio_tone += AUDIO_STEP;
+      }
     }
   }
   if (pg->player.is_climbing)
@@ -396,8 +394,11 @@ inline void move_player(void)
       pg->player.animation_frame++;
       pg->player.animation_frame %= 3;
       pg->player.animation_frame += 6;
-      m.audio_noise = false;
-      m.audio_tone = AUDIO_TONE_CLIMBING;
+      if (!m.audio_tone)
+      {
+        m.audio_noise = false;
+        m.audio_tone = AUDIO_TONE_CLIMBING;
+      }
     }
     pg->player.y += pg->player.vy;
     pg->player.vy = 0;
@@ -448,9 +449,12 @@ inline void move_player(void)
       {
         audio_tone = AUDIO_TONE_FALLING;
       }
-      m.audio_noise = false;
-      m.audio_tone = audio_tone;
-      audio_tone += AUDIO_STEP;
+      if (!m.audio_tone)
+      {
+        m.audio_noise = false;
+        m.audio_tone = audio_tone;
+        audio_tone += AUDIO_STEP;
+      }
     }
   }
   if (pg->player.vy < JUMP_SPEED_MAX)
@@ -465,6 +469,10 @@ void model_game_tick(void)
   {
     update_counters();
     return;
+  }
+  if (pg->game_over)
+  {
+    return; // wait until button pressed
   }
 
   static bool tick_mod = false;

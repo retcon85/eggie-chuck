@@ -138,6 +138,7 @@ void load_level(void)
 
 void model_game_init(char *level_data[], uint8_t level_count)
 {
+  m.reset = false;
   m.level_data = level_data;
   m.level_count = level_count;
   for (m.current_player = 0; m.current_player < m.player_count; m.current_player++)
@@ -145,6 +146,7 @@ void model_game_init(char *level_data[], uint8_t level_count)
     pg = &m.player_games[m.current_player];
     pg->level = 0;
     pg->lives = INITIAL_LIVES - 1;
+    pg->game_over = false;
     reset_score();
     for (uint8_t y = 0; y < SCREEN_MAP_HEIGHT; y++)
     {
@@ -160,13 +162,9 @@ void model_game_init(char *level_data[], uint8_t level_count)
 
 void model_game_select_player(uint8_t player)
 {
-  if (player != m.current_player)
-  {
-    get_ready_counter = GET_READY_SCREEN_TIMEOUT;
-    m.render_mask = VIEW_GAME_SHOW_GET_READY_SCREEN | VIEW_GAME_WAIT;
-  }
+  get_ready_counter = GET_READY_SCREEN_TIMEOUT;
+  m.render_mask = VIEW_GAME_SHOW_GET_READY_SCREEN | VIEW_GAME_WAIT;
   m.current_player = player;
-  m.audio_noise = false;
   m.audio_tone = 0;
   pg = &m.player_games[player];
   pg->player.is_jumping = false;
@@ -180,9 +178,33 @@ void model_game_select_player(uint8_t player)
   model_game_tick(); // initial tick to calculate surface!
 }
 
-void game_over(void)
+void player_game_over(void)
 {
-  model_game_init(m.level_data, m.level_count);
+  m.render_mask = VIEW_GAME_SHOW_GET_GAME_OVER_OVERLAY | VIEW_GAME_WAIT;
+  get_ready_counter = GET_READY_SCREEN_TIMEOUT;
+  pg->game_over = true;
+}
+
+void next_player(void)
+{
+  uint8_t current_player = m.current_player;
+
+  do
+  {
+    if (m.current_player == m.player_count - 1)
+    {
+      model_game_select_player(0);
+    }
+    else
+    {
+      model_game_select_player(m.current_player + 1);
+    }
+  } while (pg->game_over && m.current_player != current_player);
+
+  if (pg->game_over)
+  {
+    m.reset = true;
+  }
 }
 
 void model_game_player_left(void)
@@ -231,6 +253,11 @@ void model_game_player_down(void)
 
 void model_game_player_jump(void)
 {
+  if (pg->game_over && get_ready_counter == 0)
+  {
+    next_player();
+  }
+
   if (pg->player.is_on_platform || pg->player.is_climbing)
   {
     pg->player.vy = -JUMP_SPEED_INITIAL;

@@ -31,8 +31,11 @@ ifeq ("$(USEPSGLIB)", "true")
 PSGLIB := $(SMSLIB_DIR)/PSGlib.rel
 PSGMACRO := -DUSEPSGLIB
 endif
+VERSION := $(file <VERSION)
+VERSION_SUFFIX := -$(VERSION)
 
 TARGET := $(TARGETDIR)$(PROJECTNAME).$(TARGETEXT)
+VERSIONED_TARGET = $(TARGETDIR)$(PROJECTNAME)$(VERSION_SUFFIX).$(TARGETEXT)
 SOURCE_DIRS := $(SOURCEDIR) $(SOURCEDIR)**/
 SOURCES := $(foreach dir,$(SOURCE_DIRS),$(wildcard $(dir)*.$(SOURCEEXT)))
 HEADERS := $(foreach dir,$(SOURCE_DIRS),$(wildcard $(dir)*.$(HEADEREXT)))
@@ -59,11 +62,14 @@ ASSETSHEADER := $(SOURCEDIR)assets.generated.$(HEADEREXT)
 MAINS := $(TARGETDIR)$(ENTRYPOINT).rel
 
 # main build target
-build: $(TARGETDIR) assets $(TARGET)
+build: $(TARGETDIR) assets $(TARGET) $(VERSIONED_TARGET)
 
 # create the build folder if it doesn't exist
 $(TARGETDIR):
 	mkdir -p $(TARGETDIR)
+
+$(VERSIONED_TARGET): $(TARGET) VERSION
+	cp $< $@
 
 # link stage - generally runs once to create a single output
 $(TARGETDIR)%.ihx: $(OBJECTS)

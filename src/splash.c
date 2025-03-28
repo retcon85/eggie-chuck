@@ -183,6 +183,7 @@ void splash_show(void)
   SMS_loadTiles(retcon_tiles_bin, 0, retcon_tiles_bin_size);
   SMS_mapROMBank(splash_font_bin_bank);
   SMS_loadTiles(splash_font_bin, 32, splash_font_bin_size);
+  SMS_mapROMBank(retcon_palettes_bin_bank);
   SMS_loadBGPalette(retcon_palettes_bin);
   SMS_loadSpritePalette(&retcon_palettes_bin[16]);
   SMS_mapROMBank(retcon_tilemap_bin_bank);
