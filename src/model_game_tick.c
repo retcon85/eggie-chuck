@@ -353,7 +353,7 @@ inline void move_player(void)
   // check right bounds
   if (pg->player.x > (256 - 16)) // !TODO: extract define
   {
-    pg->player.x = (256 - 16);
+    pg->player.x = 240; // (256 - 16);
   }
 
   if (pg->player.is_jumping)

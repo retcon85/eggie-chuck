@@ -318,7 +318,7 @@ void view_game_tick(void)
   {
     SMS_initSprites();
     SMS_copySpritestoSAT();
-    for (uint8_t j = 0; j < 5; j++)
+    for (uint8_t j = 0; j < 6; j++)
     {
       SMS_setNextTileatXY(7, j + 9);
       for (uint8_t i = 0; i < 19; i++)
