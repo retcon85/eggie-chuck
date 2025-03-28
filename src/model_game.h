@@ -102,6 +102,7 @@ struct game_model_t
   uint8_t render_mask;
   uint8_t audio_tone;
   bool audio_noise;
+  bool audio_music;
   struct player_game_t player_games[MAX_PLAYERS];
   bool reset;
 };

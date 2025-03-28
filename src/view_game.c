@@ -205,6 +205,49 @@ char sfx_noise[] = {
 void view_game_tick(void)
 {
   PSGSFXFrame();
+  SMS_saveROMBank();
+  SMS_mapROMBank(lose_life_psg_bank);
+  PSGFrame();
+  SMS_restoreROMBank();
+
+  // if music is playing, suspend all view updates
+  if (m.audio_music)
+  {
+    static bool started = false;
+    unsigned char status = PSGGetStatus();
+    if (!started && status == PSG_STOPPED)
+    {
+      PSGPlayNoRepeat(lose_life_psg);
+      started = true;
+    }
+    else if (started && status == PSG_STOPPED)
+    {
+      m.audio_music = false;
+      started = false;
+    }
+    return;
+  }
+
+  // audio sfx
+  if (m.audio_tone > 0)
+  {
+    if (PSGSFXGetStatus() == PSG_STOPPED)
+    {
+      if (m.audio_noise)
+      {
+        sfx_noise[0] = 0xe0 | (m.audio_tone & 0x07);
+        PSGSFXPlay(sfx_noise, 0x00);
+      }
+      else
+      {
+        sfx_tone[0] = 0x80 | (m.audio_tone & 0x0f);
+        sfx_tone[1] = 0x40 | (m.audio_tone >> 4);
+        PSGSFXPlay(sfx_tone, 0x00);
+      }
+      m.audio_tone = 0;
+    }
+  }
+
   // if (pg->birds[0].is_climbing)
   // {
   //   SMS_setBackdropColor(2); // pink
@@ -377,24 +420,5 @@ void view_game_tick(void)
     SMS_setTile(TILE_BLANK);
 
     m.render_mask &= ~VIEW_GAME_RENDER_PICKUP;
-  }
-  // cue sound effects
-  if (m.audio_tone > 0)
-  {
-    if (PSGSFXGetStatus() == PSG_STOPPED)
-    {
-      if (m.audio_noise)
-      {
-        sfx_noise[0] = 0xe0 | (m.audio_tone & 0x07);
-        PSGSFXPlay(sfx_noise, 0x00);
-      }
-      else
-      {
-        sfx_tone[0] = 0x80 | (m.audio_tone & 0x0f);
-        sfx_tone[1] = 0x40 | (m.audio_tone >> 4);
-        PSGSFXPlay(sfx_tone, 0x00);
-      }
-      m.audio_tone = 0;
-    }
   }
 }

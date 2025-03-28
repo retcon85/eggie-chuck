@@ -19,6 +19,7 @@ extern uint8_t get_ready_counter;
 static void life_over(void)
 {
   m.audio_tone = 0;
+  m.audio_music = true;
   if (pg->lives == 0)
   {
     player_game_over();
@@ -465,6 +466,10 @@ inline void move_player(void)
 
 void model_game_tick(void)
 {
+  if (m.audio_music)
+  {
+    return; // wait until music finished
+  }
   if (get_ready_counter > 0)
   {
     update_counters();
