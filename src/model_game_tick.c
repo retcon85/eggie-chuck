@@ -291,9 +291,9 @@ inline void move_birds(void)
         {
           tile += 2;
         }
-        if ((*tile & 0x07) != PLATFORM)
+        if (((*tile & 0x07) != PLATFORM) || (bird->x > (256 - 16))) // !TODO:
         {
-          // if walked over edge, turn around
+          // if walked over edge, or hit edge of screen, turn around
           bird->vx = -bird->vx;
         }
       }
@@ -350,7 +350,7 @@ inline void move_player(void)
     }
   }
   // check right bounds
-  if (pg->player.x > (256 - 16)) // !TODO: extract define
+  if (pg->player.x > (256 - 16)) // !TODO:
   {
     pg->player.x = 240; // (256 - 16);
   }
