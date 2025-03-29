@@ -101,6 +101,10 @@ struct game_model_t
   bool reset;
   uint8_t collect_x;
   uint8_t collect_y;
+#ifdef DEBUG
+  uint8_t dbg_tile_x;
+  uint8_t dbg_tile_y;
+#endif
 };
 
 void model_game_init(char *level_data[], uint8_t level_count);

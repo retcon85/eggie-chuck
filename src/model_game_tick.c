@@ -211,26 +211,45 @@ inline void move_elevators(void)
 
 inline void collision_calculations(void)
 {
-  pg->player.is_over_ladder = false;
   if (pg->player.is_on_elevator)
     return;
 
   pg->player.is_on_platform = false;
+  pg->player.is_over_ladder = false;
 
   // check all four background tiles behind player, starting with...
   // ...top left
-  uint8_t tile_x = (pg->player.x + 7) / 8;
+  const uint8_t player_center = pg->player.x + 7;
+  uint8_t tile_x = player_center / 8;
   uint8_t tile_y = pg->player.y / 8 - 1;
+#ifdef DEBUG
+  m.dbg_tile_x = tile_x;
+  m.dbg_tile_y = tile_y;
+#endif
   uint8_t *tile = &pg->screen_map[tile_y][tile_x];
   check_object_collection(tile, tile_x, tile_y);
-  if (((*tile & 0x18) == LADDER) && ((pg->player.x & 0x07) == 0))
+  if ((*tile & 0x18) == 0x18)
   {
     pg->player.is_over_ladder = true;
+    if (pg->player.is_climbing)
+    {
+      // fix up alignment so player is always directly on ladder
+      pg->player.x = (tile_x - 1) * 8;
+    }
   }
   // ...top right
   tile_x++;
   tile++;
   check_object_collection(tile, tile_x, tile_y);
+  if ((*tile & 0x18) == 0x18)
+  {
+    pg->player.is_over_ladder = true;
+    if (pg->player.is_climbing)
+    {
+      // fix up alignment so player is always directly on ladder
+      pg->player.x = (tile_x - 1) * 8;
+    }
+  }
   // ...bottom right
   tile_y++;
   tile += SCREEN_MAP_WIDTH;
@@ -394,8 +413,6 @@ inline void move_player(void)
     {
       pg->player.y -= pg->player.vy;
       pg->player.vy = 0;
-      // sometimes the player can get off alignment horizontally, so fix that up
-      pg->player.x = (pg->player.x + 4) & 0xf8;
     }
 
     // animation & sfx for climbing

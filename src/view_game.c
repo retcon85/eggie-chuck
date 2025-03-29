@@ -413,4 +413,13 @@ void view_game_tick(void)
 
     m.render_mask &= ~VIEW_GAME_RENDER_COLLECT;
   }
+
+#ifdef DEBUG
+  static uint8_t old_dbg_x;
+  static uint8_t old_dbg_y;
+  SMS_setTileatXY(old_dbg_x, old_dbg_y, TILE_BLANK);
+  SMS_setTileatXY(m.dbg_tile_x, m.dbg_tile_y, TILE_TEXT_BLANK);
+  old_dbg_x = m.dbg_tile_x;
+  old_dbg_y = m.dbg_tile_y;
+#endif
 }
