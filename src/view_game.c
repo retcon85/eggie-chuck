@@ -204,6 +204,18 @@ char sfx_noise[] = {
 
 void view_game_tick(void)
 {
+#ifdef DEBUG
+  if (pg->player.is_climbing)
+    SMS_setBackdropColor(2); // pink
+  else if (pg->player.is_over_ladder)
+    SMS_setBackdropColor(1); // green
+  else if (pg->player.is_on_platform)
+    SMS_setBackdropColor(3); // yellow
+  else if (pg->player.is_jumping)
+    SMS_setBackdropColor(4); // cyan
+  else
+    SMS_setBackdropColor(0);
+#endif
   PSGSFXFrame();
   SMS_saveROMBank();
   SMS_mapROMBank(lose_life_psg_bank);
@@ -248,26 +260,6 @@ void view_game_tick(void)
     }
   }
 
-  // if (pg->birds[0].is_climbing)
-  // {
-  //   SMS_setBackdropColor(2); // pink
-  // }
-  // else if (pg->birds[0].is_over_ladder)
-  // {
-  //   SMS_setBackdropColor(1); // green
-  // }
-  // else if (pg->birds[0].is_on_platform)
-  // {
-  //   SMS_setBackdropColor(3); // yellow
-  // }
-  // if (pg->player.is_jumping)
-  // {
-  //   SMS_setBackdropColor(3); // yellow
-  // }
-  // else
-  // {
-  //   SMS_setBackdropColor(0);
-  // }
   if ((m.render_mask & 0x01f) == VIEW_GAME_SHOW_GET_READY_SCREEN)
   {
     SMS_displayOff();

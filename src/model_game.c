@@ -243,7 +243,7 @@ void model_game_player_right(void)
 
 void model_game_player_up(void)
 {
-  if (pg->player.is_over_ladder)
+  if (pg->player.is_over_ladder || pg->player.is_climbing)
   {
     pg->player.vy = -LADDER_SPEED;
     pg->player.is_climbing = true;
@@ -253,7 +253,7 @@ void model_game_player_up(void)
 
 void model_game_player_down(void)
 {
-  if (pg->player.is_over_ladder)
+  if (pg->player.is_over_ladder || pg->player.is_climbing)
   {
     pg->player.vy = LADDER_SPEED;
     pg->player.is_climbing = true;

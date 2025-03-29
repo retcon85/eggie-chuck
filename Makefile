@@ -14,7 +14,10 @@ TEST_BANKS := #-Wl-b_TESTBANK=0x8000
 # defaults to the next bank after those already detected automatically
 TEST_BANK_NUM = $(words bank0 bank1 $(sort $(BANK_NAMES)))
 ifdef LEVEL_TEST
-COMPILER_ARGS = -DLEVEL_TEST=1
+COMPILER_ARGS := -DLEVEL_TEST=1
+endif
+ifdef DEBUG
+COMPILER_ARGS := $(COMPILER_ARGS) -DDEBUG=1
 endif
 
 # by default output will take the name of the folder we're in

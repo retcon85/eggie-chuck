@@ -217,31 +217,27 @@ inline void collision_calculations(void)
 
   pg->player.is_on_platform = false;
 
-  // check all four background tiles behind player, starting with top left
+  // check all four background tiles behind player, starting with...
+  // ...top left
   uint8_t tile_x = (pg->player.x + 7) / 8;
   uint8_t tile_y = pg->player.y / 8 - 1;
   uint8_t *tile = &pg->screen_map[tile_y][tile_x];
   check_object_collection(tile, tile_x, tile_y);
-  if ((*tile & 0x18) == LADDER)
+  if (((*tile & 0x18) == LADDER) && ((pg->player.x & 0x07) == 0))
   {
     pg->player.is_over_ladder = true;
   }
-  // top right
+  // ...top right
   tile_x++;
   tile++;
   check_object_collection(tile, tile_x, tile_y);
-  // bottom right
+  // ...bottom right
   tile_y++;
   tile += SCREEN_MAP_WIDTH;
   check_object_collection(tile, tile_x, tile_y);
-  // bottom left
+  // ...bottom left
   tile_x--;
   tile--;
-  // need to be fully on a ladder tile to use it
-  if (!pg->player.is_over_ladder || (*tile & 0x18) != LADDER || (pg->player.x & 0x07))
-  {
-    pg->player.is_over_ladder = false;
-  }
   check_object_collection(tile, tile_x, tile_y);
   if ((*tile & 0x07) == PLATFORM)
   {
@@ -257,10 +253,10 @@ inline void move_birds(void)
     struct character_t *bird = &pg->birds[i];
     // check collisions
     if (!(
-            (bird->x + 14 < pg->player.x) || // !TODO:
-            (bird->x > pg->player.x + 14) || // !TODO:
+            (bird->x + 12 < pg->player.x) || // !TODO:
+            (bird->x > pg->player.x + 12) || // !TODO:
             (bird->y < pg->player.y - 14) || // !TODO:
-            (bird->y - 20 > pg->player.y)))  // !TODO:
+            (bird->y - 18 > pg->player.y)))  // !TODO:
     {
       life_over();
       return;
@@ -343,17 +339,6 @@ inline void move_player(void)
   // for dynamic sounds, i.e. jumping, falling
   static uint8_t audio_tone = 0;
 
-  // if we are climbing but tried to move off the ladder, don't allow it
-  if (pg->player.is_climbing && !pg->player.is_over_ladder && !pg->player.is_on_platform)
-  {
-    pg->player.vx = 0;
-    pg->player.vy = 0;
-    pg->player.x = (pg->player.x + 4) & 0xf8;
-    pg->player.y = (pg->player.y + 4) & 0xf8 - 1;
-    pg->player.is_over_ladder = true;
-    // return;
-  }
-
   // check left bounds + update x position
   if (!pg->player.is_climbing && pg->player.vx != 0 && -pg->player.vx < pg->player.x)
   {
@@ -402,6 +387,18 @@ inline void move_player(void)
   }
   if (pg->player.is_climbing)
   {
+    pg->player.y += pg->player.vy;
+    // not the most efficient, but do another collision check to see if the player is still on a ladder after climbing up/down
+    collision_calculations();
+    if (!pg->player.is_over_ladder)
+    {
+      pg->player.y -= pg->player.vy;
+      pg->player.vy = 0;
+      // sometimes the player can get off alignment horizontally, so fix that up
+      pg->player.x = (pg->player.x + 4) & 0xf8;
+    }
+
+    // animation & sfx for climbing
     if (pg->player.vy == 0)
     {
       pg->player.animation_frame = 6;
@@ -417,7 +414,6 @@ inline void move_player(void)
         m.audio_tone = AUDIO_TONE_CLIMBING;
       }
     }
-    pg->player.y += pg->player.vy;
     pg->player.vy = 0;
     pg->player.vx = 0;
     return;
