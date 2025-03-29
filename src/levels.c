@@ -7,20 +7,20 @@
 const char *levels[] = {
 
 #ifdef LEVEL_TEST
-    // level 6 - WIP
-    "y6x27p3ep2"
-    "y7x9ep2x13p2"
-    "y8x5ex19ep6Bp4"
-    "y9x22l5"
-    "y11x0gp2Bp2gp6x11ex26p4ep2x27l7"
-    "y15x3p8gp2x19ep3Bp3ep4"
-    "y16x27p3gp2"
-    "y18x22l6"
-    "y19x0Bp3x5p3ep2x19ep5"
-    "y20x6l12"
-    "y22x0l6x27l10"
-    "y23x0p3ep2x9p4Pp2vx18gp2gp2gp2x25e",
-// TEST_LEVEL,
+    // // level 6 - WIP
+    // "y6x27p3ep2"
+    // "y7x9ep2x13p2"
+    // "y8x5ex19ep6Bp4"
+    // "y9x22l5"
+    // "y11x0gp2Bp2gp6x11ex26p4ep2x27l7"
+    // "y15x3p8gp2x19ep3Bp3ep4"
+    // "y16x27p3gp2"
+    // "y18x22l6"
+    // "y19x0Bp3x5p3ep2x19ep5"
+    // "y20x6l12"
+    // "y22x0l6x27l10"
+    // "y23x0p3ep2x9p4Pp2vx18gp2gp2gp2x25e",
+    TEST_LEVEL,
 #else
     // level 1
     "y7x8pep4Bp3x18p3ep2gp4x29pep2"

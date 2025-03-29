@@ -217,51 +217,63 @@ inline void collision_calculations(void)
   pg->player.is_on_platform = false;
   pg->player.is_over_ladder = false;
 
-  // check all four background tiles behind player, starting with...
-  // ...top left
-  const uint8_t player_center = pg->player.x + 7;
-  uint8_t tile_x = player_center / 8;
-  uint8_t tile_y = pg->player.y / 8 - 1;
+  // check what kind of surface the player is standing on
+  uint8_t tile_x = (pg->player.x + 7) / 8;
+  uint8_t tile_y = pg->player.y / 8;
 #ifdef DEBUG
   m.dbg_tile_x = tile_x;
   m.dbg_tile_y = tile_y;
 #endif
   uint8_t *tile = &pg->screen_map[tile_y][tile_x];
-  check_object_collection(tile, tile_x, tile_y);
-  if ((*tile & 0x18) == 0x18)
-  {
-    pg->player.is_over_ladder = true;
-    if (pg->player.is_climbing)
-    {
-      // fix up alignment so player is always directly on ladder
-      pg->player.x = (tile_x - 1) * 8;
-    }
-  }
-  // ...top right
-  tile_x++;
-  tile++;
-  check_object_collection(tile, tile_x, tile_y);
-  if ((*tile & 0x18) == 0x18)
-  {
-    pg->player.is_over_ladder = true;
-    if (pg->player.is_climbing)
-    {
-      // fix up alignment so player is always directly on ladder
-      pg->player.x = (tile_x - 1) * 8;
-    }
-  }
-  // ...bottom right
-  tile_y++;
-  tile += SCREEN_MAP_WIDTH;
-  check_object_collection(tile, tile_x, tile_y);
-  // ...bottom left
-  tile_x--;
-  tile--;
-  check_object_collection(tile, tile_x, tile_y);
   if ((*tile & 0x07) == PLATFORM)
   {
     pg->player.is_on_platform = true;
   }
+
+  // check whether the player is standing over a ladder
+  tile_y--;
+  tile -= SCREEN_MAP_WIDTH;
+  if ((*tile & 0x08) == LADDER)
+  {
+    pg->player.is_over_ladder = true;
+    if (pg->player.is_climbing)
+    {
+      // fix up alignment so player is always directly on ladder
+      pg->player.x = (tile_x - ((*tile & 0x10) >> 4)) * 8;
+    }
+  }
+
+  // now check all four background tiles behind player for object collisions, starting with...
+  // ...bottom left or right
+  check_object_collection(tile, tile_x, tile_y);
+  if (tile_x == pg->player.x / 8)
+  {
+    // ...bottom right
+    tile_x++;
+    tile++;
+    check_object_collection(tile, tile_x, tile_y);
+    tile_y--;
+    tile -= SCREEN_MAP_WIDTH;
+  }
+  else
+  {
+    // ...bottom left
+    tile_x--;
+    tile--;
+    check_object_collection(tile, tile_x, tile_y);
+    tile_y--;
+    tile -= SCREEN_MAP_WIDTH - 1;
+  }
+  // ...top right
+  check_object_collection(tile, tile_x, tile_y);
+  // ...top left
+  tile_x--;
+  tile--;
+  check_object_collection(tile, tile_x, tile_y);
+#ifdef DEBUG
+  m.dbg_tile_x = tile_x;
+  m.dbg_tile_y = tile_y;
+#endif
 }
 
 // checks collisions and periodically updates bird positions
