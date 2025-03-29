@@ -343,7 +343,7 @@ inline void move_player(void)
   if (!pg->player.is_climbing && pg->player.vx != 0 && -pg->player.vx < pg->player.x)
   {
     pg->player.x += pg->player.vx;
-    if (!m.audio_tone)
+    if (!m.audio_tone && !pg->player.is_jumping)
     {
       m.audio_noise = false;
       m.audio_tone = AUDIO_TONE_WALKING;
@@ -358,7 +358,7 @@ inline void move_player(void)
   if (pg->player.is_jumping)
   {
     pg->player.y += pg->player.vy >> 3;
-    if (audio_tone == 0)
+    if (!audio_tone)
     {
       audio_tone = AUDIO_TONE_JUMPING;
     }
@@ -458,7 +458,7 @@ inline void move_player(void)
     {
       pg->player.y += pg->player.vy >> 3;
       pg->player.vx = 0;
-      if (audio_tone == 0)
+      if (!audio_tone)
       {
         audio_tone = AUDIO_TONE_FALLING;
       }
