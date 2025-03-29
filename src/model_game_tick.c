@@ -49,16 +49,13 @@ static void update_score(uint8_t delta)
   if (pg->score[2] != ten_k)
   {
     pg->lives++;
-    m.render_mask |= VIEW_GAME_RENDER_SCORELINE;
   }
+  m.render_mask |= VIEW_GAME_RENDER_SCORELINE;
 }
 
 static void collect_grain(void)
 {
   update_score(50);
-  m.render_mask |= VIEW_GAME_RENDER_PICKUP;
-  m.audio_noise = true;
-  m.audio_tone = AUDIO_NOISE_PICKUP;
   time_counter -= GRAIN_BONUS_TIME;
 }
 
@@ -80,9 +77,6 @@ static void collect_egg(void)
     return;
   update_score(100);
   pg->egg_count--;
-  m.render_mask |= VIEW_GAME_RENDER_PICKUP;
-  m.audio_noise = true;
-  m.audio_tone = AUDIO_NOISE_PICKUP;
 }
 
 inline bool kill_player_offscreen(void)
@@ -154,81 +148,101 @@ inline void update_counters(void)
 
 inline void move_elevators(void)
 {
-  bool on_elevator = false;
-  if (pg->elevator_enabled)
-  {
-    uint8_t elevator_y = pg->elevator_pos_y;
-    if (time_counter % 2 == 0)
-    {
-      pg->elevator_pos_y -= ELEVATOR_SPEED;
-    }
+  pg->player.is_on_elevator = false;
+  if (!pg->elevator_enabled)
+    return;
 
-    if (pg->player.x >= pg->elevator_pos_x - 6 &&     // !TODO:
-        pg->player.x <= pg->elevator_pos_x + 24 - 12) // !TODO:
+  uint8_t elevator_y = pg->elevator_pos_y;
+  if (time_counter % 2 == 0)
+  {
+    pg->elevator_pos_y -= ELEVATOR_SPEED;
+  }
+
+  if (pg->player.x + 8 >= pg->elevator_pos_x + 5 &&    // !TODO:
+      pg->player.x + 8 <= pg->elevator_pos_x + 24 - 4) // !TODO:
+  {
+    for (uint8_t i = 0; i < 2; i++, elevator_y -= 112) // !TODO:
     {
-      for (uint8_t i = 0; i < 2; i++, elevator_y -= 112) // !TODO:
+      if (pg->player.y >= elevator_y &&
+          pg->player.y <= elevator_y + 4)
       {
-        if (pg->player.y >= elevator_y &&
-            pg->player.y <= elevator_y + 4)
-        {
-          pg->player.y = pg->elevator_pos_y - (i ? 112 : 0); // !TODO:
-          pg->player.is_on_elevator = true;
-        };
-      }
+        pg->player.y = pg->elevator_pos_y - (i ? 112 : 0); // !TODO:
+        pg->player.is_on_elevator = true;
+        pg->player.is_on_platform = true; // elevator is just like a platform
+      };
     }
   }
 }
 
-inline void check_object_collection(uint8_t *tile)
+/* inline */ void check_object_collection(uint8_t *tile, uint8_t tile_x, uint8_t tile_y)
 {
   if ((*tile & 0x0f) == EGG)
   {
     collect_egg();
-    *tile = NOTHING;
   }
   else if ((*tile & 0x0f) == GRAIN)
   {
     collect_grain();
-    *tile = NOTHING;
   }
+  else
+  {
+    return;
+  }
+
+  // update the map
+  if ((*tile & 0xf0) > 0)
+  {
+    // we caught the right-hand edge, so step back one
+    tile--;
+    tile_x--;
+  }
+  *(tile++) = NOTHING;
+  *tile = NOTHING;
+
+  // tell the view to blank off the tile where the object was collected
+  m.render_mask |= VIEW_GAME_RENDER_COLLECT;
+  m.collect_x = tile_x;
+  m.collect_y = tile_y;
+
+  // play sfx
+  m.audio_noise = true;
+  m.audio_tone = AUDIO_NOISE_COLLECT;
 }
 
 inline void collision_calculations(void)
 {
+  pg->player.is_over_ladder = false;
   if (pg->player.is_on_elevator)
-  {
-    pg->player.is_on_platform = false;
-    pg->player.is_over_ladder = false;
     return;
-  }
 
   pg->player.is_on_platform = false;
-  pg->player.is_over_ladder = false;
+
   // check all four background tiles behind player, starting with top left
-  uint8_t *tile = &pg->screen_map[pg->player.y / 8 - 1][pg->player.x / 8];
-  check_object_collection(tile);
+  uint8_t tile_x = (pg->player.x + 7) / 8;
+  uint8_t tile_y = pg->player.y / 8 - 1;
+  uint8_t *tile = &pg->screen_map[tile_y][tile_x];
+  check_object_collection(tile, tile_x, tile_y);
   if ((*tile & 0x18) == LADDER)
   {
     pg->player.is_over_ladder = true;
   }
   // top right
+  tile_x++;
   tile++;
-  check_object_collection(tile);
+  check_object_collection(tile, tile_x, tile_y);
+  // bottom right
+  tile_y++;
+  tile += SCREEN_MAP_WIDTH;
+  check_object_collection(tile, tile_x, tile_y);
   // bottom left
-  tile += SCREEN_MAP_WIDTH - 1;
+  tile_x--;
+  tile--;
   // need to be fully on a ladder tile to use it
   if (!pg->player.is_over_ladder || (*tile & 0x18) != LADDER || (pg->player.x & 0x07))
   {
     pg->player.is_over_ladder = false;
-    check_object_collection(tile);
-    if ((*tile & 0x07) == PLATFORM)
-    {
-      pg->player.is_on_platform = true;
-    }
   }
-  // bottom right
-  tile++;
-  check_object_collection(tile);
+  check_object_collection(tile, tile_x, tile_y);
   if ((*tile & 0x07) == PLATFORM)
   {
     pg->player.is_on_platform = true;
@@ -243,10 +257,10 @@ inline void move_birds(void)
     struct character_t *bird = &pg->birds[i];
     // check collisions
     if (!(
-            (bird->x + 16 < pg->player.x) || // !TODO:
-            (bird->x > pg->player.x + 16) || // !TODO:
-            (bird->y < pg->player.y - 16) || // !TODO:
-            (bird->y - 24 > pg->player.y)))  // !TODO:
+            (bird->x + 14 < pg->player.x) || // !TODO:
+            (bird->x > pg->player.x + 14) || // !TODO:
+            (bird->y < pg->player.y - 14) || // !TODO:
+            (bird->y - 20 > pg->player.y)))  // !TODO:
     {
       life_over();
       return;

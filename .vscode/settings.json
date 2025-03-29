@@ -17,6 +17,7 @@
   "C_Cpp.default.defines": [
     "USEPSGLIB",
     "THIS_BANK=-1",
+    "LEVEL_TEST=1",
     "__banked="
   ],
   "[c]": {

@@ -1,8 +1,14 @@
+#define TEST_LEVEL    \
+    "y12x10pp6Pp3ep3" \
+    "y18x14l14"       \
+    "y23x0p7vx10p20"  \
+    ""
+
 const char *levels[] = {
 
-    // // test level
-    // "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
-
+#ifdef LEVEL_TEST
+    TEST_LEVEL,
+#else
     // level 1
     "y7x8pep4Bp3x18p3ep2gp4x29pep2"
     "y10x14p2ep2gp2"
@@ -15,6 +21,7 @@ const char *levels[] = {
     "y19x2ep6gp13ep2gp5ep2"
     "y22x0x11l18x18l5x25l5"
     "y23x0p3gp3ep8Pp8gp10",
+#endif
 
     // level 2
     "y7x6p5ep7x20gp5ep5ep2"
@@ -35,20 +42,20 @@ const char *levels[] = {
     "y11x28p4"
     "y12x0gp2ep4"
     "y14x21gp2ep2"
-    "y15x4l8x30l6"
+    "y15x3Bx4l8x30l6"
     "y16x0p6ep2x29p3"
     "y17x23ep2x27p2"
-    "y18x13l12x17l12x21p2"
+    "y18x13l12x17Bl12x21p2"
     "y19x11gp4ep4"
     "y20x24p2ep5"
     "y22x1l8x5p1ep2x28l4"
     "y23x0p4gp2x8vx11Pp5 x18p4gp2Bp2ep6",
 
-    // level 4 (=stub)
-    "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
+    // level 4
+    TEST_LEVEL,
 
-    // level 5 (=stub)
-    "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
+    // level 5
+    TEST_LEVEL,
 
     // level 6 - WIP
     "y6x29pep2"
@@ -64,10 +71,10 @@ const char *levels[] = {
     "y22x0l6x27l10"
     "y23x0p3ep2x9p4Pp2vx18gp2gp2gp2x25e",
 
-    // level 7 (=stub)
-    "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
+    // level 7
+    TEST_LEVEL,
 
-    // level 8 (=stub)
-    "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
+    // level 8
+    TEST_LEVEL,
 
 };

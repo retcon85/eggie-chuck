@@ -6,7 +6,7 @@
 
 #define VIEW_GAME_RENDER_FULL_REDRAW 1
 #define VIEW_GAME_RENDER_SCORELINE 2
-#define VIEW_GAME_RENDER_PICKUP 4
+#define VIEW_GAME_RENDER_COLLECT 4
 #define VIEW_GAME_SHOW_GET_READY_SCREEN 8
 #define VIEW_GAME_SHOW_GET_GAME_OVER_OVERLAY 9
 #define VIEW_GAME_WAIT 128
@@ -49,7 +49,7 @@
 #define AUDIO_TONE_JUMPING 0x69
 #define AUDIO_TONE_FALLING 0xc8
 #define AUDIO_NOISE_BONUS_TRANSFER 0x04
-#define AUDIO_NOISE_PICKUP 0x04
+#define AUDIO_NOISE_COLLECT 0x04
 #define AUDIO_STEP 3
 
 struct character_t
@@ -99,6 +99,8 @@ struct game_model_t
   bool audio_music;
   struct player_game_t player_games[MAX_PLAYERS];
   bool reset;
+  uint8_t collect_x;
+  uint8_t collect_y;
 };
 
 void model_game_init(char *level_data[], uint8_t level_count);

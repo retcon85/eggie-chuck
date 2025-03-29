@@ -413,12 +413,12 @@ void view_game_tick(void)
     update_scorelines();
     m.render_mask &= ~VIEW_GAME_RENDER_SCORELINE;
   }
-  if (m.render_mask & VIEW_GAME_RENDER_PICKUP)
+  if (m.render_mask & VIEW_GAME_RENDER_COLLECT)
   {
-    SMS_setNextTileatXY(pg->player.x / 8, pg->player.y / 8 - 1);
+    SMS_setNextTileatXY(m.collect_x, m.collect_y);
     SMS_setTile(TILE_BLANK);
     SMS_setTile(TILE_BLANK);
 
-    m.render_mask &= ~VIEW_GAME_RENDER_PICKUP;
+    m.render_mask &= ~VIEW_GAME_RENDER_COLLECT;
   }
 }
