@@ -10,8 +10,12 @@ void main(void)
 {
   while (1)
   {
+#ifdef LEVEL_TEST
+    m.player_count = 1;
+#else
     splash_show();
     title_show();
+#endif
     model_game_init(levels, 8);
 
     view_game_init();

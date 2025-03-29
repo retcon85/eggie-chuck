@@ -4,69 +4,51 @@ const char *levels[] = {
     // "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
 
     // level 1
-    "y7x8p2ep3Bp3 x18p3ep2gp4 x29pep2"
+    "y7x8pep4Bp3x18p3ep2gp4x29pep2"
     "y10x14p2ep2gp2"
-    "y11x6ep5Bp2 x24p1gp2"
+    "y11x6ep5Bp2x24p1gp2"
     "y12x21p3"
     "y13x18p3"
     "y14x14p2ep2"
-    "y15x4ep4gp6 x22p2gp3ep3"
+    "y15x4ep4gp6x22p2gp3ep3"
     "y18x6l5"
     "y19x2ep6gp13ep2gp5ep2"
-    "y22x0 x11l18 x18l5 x25l5"
-    "y23x0 p3gp3ep8Pp8gp10",
+    "y22x0x11l18x18l5x25l5"
+    "y23x0p3gp3ep8Pp8gp10",
 
-    // level 2 (=level 1)
-    "y7x8p2ep3Bp3 x18p3ep2gp4 x29pep2"
-    "y10x14p2ep2gp2"
-    "y11x6ep5Bp2 x24p1gp2"
-    "y12x21p3"
-    "y13x18p3"
-    "y14x14p2ep2"
-    "y15x4ep4gp6 x22p2gp3ep3"
-    "y18x6l5"
-    "y19x2ep6gp13ep2gp5ep2"
-    "y22x0 x11l18 x18l5 x25l5"
-    "y23x0 p3gp3ep8Pp8gp10",
+    // level 2
+    "y7x6p5ep7x20gp5ep5ep2"
+    "y10x6l5x27l5"
+    "y11x0gp11epBp4gp2x20p12"
+    "y14x14l9x21l5"
+    "y15x0ep6y15x8p3ep12x25p5ep2"
+    "y18x9l9"
+    "y19x0ep6ep5x13p4x19pep3x25gp2Bp4"
+    "y22x3l13x14l5x27l9"
+    "y23x0gp3Bp2gp2x9ep10Pp13",
 
-    // level 3 (=level 1)
-    "y7x8p2ep3Bp3 x18p3ep2gp4 x29pep2"
-    "y10x14p2ep2gp2"
-    "y11x6ep5Bp2 x24p1gp2"
-    "y12x21p3"
-    "y13x18p3"
-    "y14x14p2ep2"
-    "y15x4ep4gp6 x22p2gp3ep3"
-    "y18x6l5"
-    "y19x2ep6gp13ep2gp5ep2"
-    "y22x0 x11l18 x18l5 x25l5"
-    "y23x0 p3gp3ep8Pp8gp10",
+    // level 3
+    "y6x21p5x28gp2ep2"
+    "y8x21p4"
+    "y9x21l5x4p2ep2x11gp9x30e"
+    "y10x17p2gp4x26ep2"
+    "y11x28p4"
+    "y12x0gp2ep4"
+    "y14x21gp2ep2"
+    "y15x4l8x30l6"
+    "y16x0p6ep2x29p3"
+    "y17x23ep2x27p2"
+    "y18x13l12x17l12x21p2"
+    "y19x11gp4ep4"
+    "y20x24p2ep5"
+    "y22x1l8x5p1ep2x28l4"
+    "y23x0p4gp2x8vx11Pp5 x18p4gp2Bp2ep6",
 
-    // level 4 (=level 1)
-    "y7x8p2ep3Bp3 x18p3ep2gp4 x29pep2"
-    "y10x14p2ep2gp2"
-    "y11x6ep5Bp2 x24p1gp2"
-    "y12x21p3"
-    "y13x18p3"
-    "y14x14p2ep2"
-    "y15x4ep4gp6 x22p2gp3ep3"
-    "y18x6l5"
-    "y19x2ep6gp13ep2gp5ep2"
-    "y22x0 x11l18 x18l5 x25l5"
-    "y23x0 p3gp3ep8Pp8gp10",
+    // level 4 (=stub)
+    "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
 
-    // level 5 (=level 1)
-    "y7x8p2ep3Bp3 x18p3ep2gp4 x29pep2"
-    "y10x14p2ep2gp2"
-    "y11x6ep5Bp2 x24p1gp2"
-    "y12x21p3"
-    "y13x18p3"
-    "y14x14p2ep2"
-    "y15x4ep4gp6 x22p2gp3ep3"
-    "y18x6l5"
-    "y19x2ep6gp13ep2gp5ep2"
-    "y22x0 x11l18 x18l5 x25l5"
-    "y23x0 p3gp3ep8Pp8gp10",
+    // level 5 (=stub)
+    "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
 
     // level 6 - WIP
     "y6x29pep2"
@@ -82,30 +64,10 @@ const char *levels[] = {
     "y22x0l6x27l10"
     "y23x0p3ep2x9p4Pp2vx18gp2gp2gp2x25e",
 
-    // level 7 (=level 1)
-    "y7x8p2ep3Bp3 x18p3ep2gp4 x29pep2"
-    "y10x14p2ep2gp2"
-    "y11x6ep5Bp2 x24p1gp2"
-    "y12x21p3"
-    "y13x18p3"
-    "y14x14p2ep2"
-    "y15x4ep4gp6 x22p2gp3ep3"
-    "y18x6l5"
-    "y19x2ep6gp13ep2gp5ep2"
-    "y22x0 x11l18 x18l5 x25l5"
-    "y23x0 p3gp3ep8Pp8gp10",
+    // level 7 (=stub)
+    "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
 
-    // level 8 (=level 1)
-    "y7x8p2ep3Bp3 x18p3ep2gp4 x29pep2"
-    "y10x14p2ep2gp2"
-    "y11x6ep5Bp2 x24p1gp2"
-    "y12x21p3"
-    "y13x18p3"
-    "y14x14p2ep2"
-    "y15x4ep4gp6 x22p2gp3ep3"
-    "y18x6l5"
-    "y19x2ep6gp13ep2gp5ep2"
-    "y22x0 x11l18 x18l5 x25l5"
-    "y23x0 p3gp3ep8Pp8gp10",
+    // level 8 (=stub)
+    "y16x0p32 y12x10pep6Pp3p3 y18x14l14",
 
 };

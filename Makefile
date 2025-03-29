@@ -13,6 +13,9 @@ FIRSTBANK := 2
 TEST_BANKS := #-Wl-b_TESTBANK=0x8000
 # defaults to the next bank after those already detected automatically
 TEST_BANK_NUM = $(words bank0 bank1 $(sort $(BANK_NAMES)))
+ifdef LEVEL_TEST
+COMPILER_ARGS = -DLEVEL_TEST=1
+endif
 
 # by default output will take the name of the folder we're in
 PROJECTNAME := $(notdir $(CURDIR))
@@ -78,12 +81,12 @@ $(TARGETDIR)%.ihx: $(OBJECTS)
 # compile unbanked sources
 $(filter-out $(BANKED_OBJECTS), $(OBJECTS)): $(TARGETDIR)%.rel: $(SOURCEDIR)%.$(SOURCEEXT) $(ASSETSHEADER) $(HEADERS) Makefile
 	mkdir -p $(TARGETDIR)$(dir $*)
-	sdcc $(INCLUDE_OPTIONS) --opt-code-speed -c -mz80 -o$(TARGETDIR)$(dir $*) --peep-file $(SMSLIB_DIR)/peep-rules.txt $(PSGMACRO) $<
+	sdcc $(INCLUDE_OPTIONS) $(COMPILER_ARGS) --opt-code-speed -c -mz80 -o$(TARGETDIR)$(dir $*) --peep-file $(SMSLIB_DIR)/peep-rules.txt $(PSGMACRO) $<
 
 # compile banked sources
 $(BANKED_OBJECTS): $(TARGETDIR)%.rel: $(SOURCEDIR)%.$(SOURCEEXT) $(ASSETSHEADER) $(HEADERS) Makefile
 	mkdir -p $(TARGETDIR)$(dir $*)
-	sdcc $(INCLUDE_OPTIONS) --constseg $(subst .,,$(suffix $(basename $<))) -DTHIS_BANK=$(subst .bank,,$(suffix $(basename $<))) --opt-code-speed -c -mz80 -o$(TARGETDIR)$(dir $*) --peep-file $(SMSLIB_DIR)/peep-rules.txt $(PSGMACRO) $<
+	sdcc $(INCLUDE_OPTIONS) $(COMPILER_ARGS) -DTHIS_BANK=$(subst .bank,,$(suffix $(basename $<))) --constseg $(subst .,,$(suffix $(basename $<))) --opt-code-speed -c -mz80 -o$(TARGETDIR)$(dir $*) --peep-file $(SMSLIB_DIR)/peep-rules.txt $(PSGMACRO) $<
 
 # packing stage - generally runs once to create a single output
 # pads to minimum 64km with -pm to ensure SRAM is used
