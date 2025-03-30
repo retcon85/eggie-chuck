@@ -244,31 +244,28 @@ inline void collision_calculations(void)
   }
 
   // now check all four background tiles behind player for object collisions, starting with...
-  // ...bottom left or right
-  check_object_collection(tile, tile_x, tile_y);
-  if (tile_x == pg->player.x / 8)
+  // ...bottom right
+  if (tile_x == (pg->player.x / 8))
   {
-    // ...bottom right
     tile_x++;
     tile++;
-    check_object_collection(tile, tile_x, tile_y);
-    tile_y--;
-    tile -= SCREEN_MAP_WIDTH;
   }
-  else
-  {
-    // ...bottom left
-    tile_x--;
-    tile--;
-    check_object_collection(tile, tile_x, tile_y);
-    tile_y--;
-    tile -= SCREEN_MAP_WIDTH - 1;
-  }
-  // ...top right
   check_object_collection(tile, tile_x, tile_y);
-  // ...top left
+  if (((*tile & 0x0f) == PLATFORM) && (pg->player.vx > 0))
+    pg->player.vx = pg->player.is_jumping ? -pg->player.vx : 0; // bounce or stop if blocked by platform
+  // ...bottom left
   tile_x--;
   tile--;
+  check_object_collection(tile, tile_x, tile_y);
+  if (((*tile & 0x0f) == PLATFORM) && (pg->player.vx < 0))
+    pg->player.vx = pg->player.is_jumping ? -pg->player.vx : 0; // bounce or stop if blocked by platform
+  // ...top left
+  tile_y--;
+  tile -= SCREEN_MAP_WIDTH;
+  check_object_collection(tile, tile_x, tile_y);
+  // ...top right
+  tile_x++;
+  tile++;
   check_object_collection(tile, tile_x, tile_y);
 #ifdef DEBUG
   m.dbg_tile_x = tile_x;
