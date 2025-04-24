@@ -173,6 +173,7 @@ void restart_current_level(void)
   {
     pg->birds[i].x = pg->birds[i].initial_x;
     pg->birds[i].y = pg->birds[i].initial_y;
+    pg->birds[i].is_climbing = false;
   }
   reset_time();
 

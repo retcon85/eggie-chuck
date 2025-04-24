@@ -15,10 +15,10 @@ void restart_current_level(void);
 
 static uint8_t time_counter = 0;
 static uint8_t bonus_counter = 0;
-static uint8_t bird_counter = 0;
+extern uint8_t bird_counter = 0;
 extern uint8_t get_ready_counter;
 
-static void life_over(void)
+void model_game_life_over(void)
 {
   m.audio_tone = 0;
   m.audio_music = true;
@@ -84,7 +84,7 @@ inline bool kill_player_offscreen(void)
   if (pg->player.y >= SCREEN_MAP_HEIGHT * 8 ||
       pg->player.is_on_elevator && pg->player.y < 24) // !TODO:
   {
-    life_over();
+    model_game_life_over();
     return true;
   }
   return false;
@@ -130,7 +130,7 @@ inline void update_counters(void)
     time_counter = 0;
     if (update_time(1))
     {
-      life_over();
+      model_game_life_over();
       return;
     }
     m.render_mask |= VIEW_GAME_RENDER_SCORELINE;
@@ -273,95 +273,6 @@ inline void collision_calculations(void)
 #endif
 }
 
-// checks collisions and periodically updates bird positions
-inline void move_birds(void)
-{
-  for (uint8_t i = 0; i < pg->bird_count; i++)
-  {
-    struct character_t *bird = &pg->birds[i];
-    // check collisions
-    if (!(
-            (bird->x + 12 < pg->player.x) || // !TODO:
-            (bird->x > pg->player.x + 12) || // !TODO:
-            (bird->y < pg->player.y - 14) || // !TODO:
-            (bird->y - 18 > pg->player.y)))  // !TODO:
-    {
-      life_over();
-      return;
-    }
-
-    if (bird_counter > 0)
-      continue;
-
-    if (!bird->is_climbing)
-    {
-      if (bird->vx == 0)
-      {
-        bird->vx = (prng_next() & 0x01) ? BIRD_SPEED : -BIRD_SPEED;
-      }
-      bird->x += bird->vx;
-      uint8_t *tile = &pg->screen_map[bird->y / 8][bird->x / 8];
-      // if exactly over ladder, decide whether to climb it or not
-      if ((*tile & 0x18) == LADDER && (bird->x & 0x07) == 0)
-      {
-        bird->vx = (prng_next() & 0x01) ? bird->vx : 0;
-        if (bird->vx == 0)
-        {
-          bird->is_climbing = true;
-          bird->is_on_platform = false;
-          bird->vy = (prng_next() & 0x01) ? BIRD_SPEED : -BIRD_SPEED;
-          bird->y += bird->vy;
-        }
-      }
-      else
-      {
-        if (bird->vx > 0)
-        {
-          tile += 2;
-        }
-        if (((*tile & 0x07) != PLATFORM) || (bird->x > (256 - 16))) // !TODO:
-        {
-          // if walked over edge, or hit edge of screen, turn around
-          bird->vx = -bird->vx;
-        }
-      }
-    }
-    else
-    {
-      bird->y += bird->vy;
-      uint8_t *tile = &pg->screen_map[bird->y / 8][bird->x / 8];
-      if ((*tile & 0x07) == PLATFORM && (bird->y & 0x07) == 0)
-      {
-        // if reached platform, decide whether to get off ladder
-        bird->vy = (prng_next() & 0x01) ? bird->vy : 0;
-        if (bird->vy == 0)
-        {
-          bird->is_climbing = false;
-          bird->is_on_platform = true;
-          bird->vx = (prng_next() & 0x01) ? BIRD_SPEED : -BIRD_SPEED;
-        }
-      }
-      // if reached top or bottom of ladder, turn around
-      else if (bird->vy > 0)
-      {
-        if ((*tile & 0x18) != LADDER)
-        {
-          bird->vy = -bird->vy;
-        }
-      }
-      else
-      {
-        // need to check top of bird instead of bottom
-        tile -= SCREEN_MAP_WIDTH * 2;
-        if ((*tile & 0x18) != LADDER)
-        {
-          bird->vy = -bird->vy;
-        }
-      }
-    }
-  }
-}
-
 inline void move_player(void)
 {
   // for dynamic sounds, i.e. jumping, falling
@@ -438,6 +349,7 @@ inline void move_player(void)
       {
         m.audio_noise = false;
         m.audio_tone = AUDIO_TONE_CLIMBING;
+        audio_tone = 0;
       }
     }
     pg->player.vy = 0;
@@ -502,6 +414,8 @@ inline void move_player(void)
   }
 }
 
+void model_game_move_birds(void);
+
 void model_game_tick(void)
 {
   if (m.audio_music)
@@ -531,7 +445,7 @@ void model_game_tick(void)
     return;
 
   move_elevators();
-  move_birds();
+  model_game_move_birds();
   collision_calculations();
   move_player();
 }
