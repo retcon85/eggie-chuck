@@ -40,8 +40,8 @@ inline void move_horizontally(struct character_t *bird)
   // if over ladder...
   if ((*tile & 0x18) == LADDER)
   {
-    // decide whether or not to climb
-    if (prng_next() & 0x01)
+    // decide whether or not to climb (~25% chance)
+    if (!(prng_next() & 0x03))
     {
       bird->vx = 0;
       bird->is_climbing = true;
@@ -69,10 +69,10 @@ inline void climb(struct character_t *bird)
 {
   bird->y += bird->vy;
   uint8_t *tile = &pg->screen_map[bird->y / 8][bird->x / 8];
-  // if reached platform, decide whether to get off ladder
+  // if reached platform, decide whether to get off ladder (~75% chance)
   if ((*tile & 0x07) == PLATFORM)
   {
-    bird->vy = (prng_next() & 0x01) ? bird->vy : 0;
+    bird->vy = (prng_next() & 0x03) ? 0 : bird->vy;
     if (bird->vy == 0)
     {
       bird->is_climbing = false;

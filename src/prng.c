@@ -15,9 +15,12 @@ void prng_set_seed(uint8_t seed)
 
 uint8_t prng_next(void)
 {
-  uint8_t lsb = random & 1;
-  random >>= 1;
-  if (lsb == 1)
-    random ^= 0xb8;
+  for (uint8_t i = 0; i < 8; i++)
+  {
+    uint8_t lsb = random & 1;
+    random >>= 1;
+    if (lsb == 1)
+      random ^= 0xb8;
+  }
   return random;
 }

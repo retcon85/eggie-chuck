@@ -28,7 +28,9 @@ void model_game_life_over(void)
     return;
   }
 
+#ifndef LEVEL_TEST
   pg->lives--;
+#endif
   next_player();
 }
 

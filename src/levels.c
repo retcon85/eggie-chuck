@@ -8,22 +8,21 @@ const char *levels[] = {
 
 #ifdef LEVEL_TEST
     // TEST_LEVEL,
-    // level 7
-    "y6x8ex12ex16e"
-    "y7x6l4x10l4x14l4x18p5ep2Bp2"
-    "y11x0p4gp3x9pep2x20l7"
-    "y12x19Bp8"
-    "y13x25e"
-    "y14x7p2x12p2"
-    "y15x0p3x7p2x12p2x16pep2"
-    "y16x7p2x23l7"
-    "y17x7p2x21p4ep2"
-    "y18x7p3ep2gp2"
-    "y19x1p5"
-    "y21x0p3x14p2x19ep2"
-    "y22x1l13x4l6x8pPp2x14p2x24p3"
-    "y23x4Bp4x11p3x27ex29v"
-    "",
+    // level 8
+    "y5x5ex27e"
+    "y7x5p2x9p2x13Bp8x23p2x27p2"
+    "y8x7ex11ex21ex25e"
+    "y10x16l5"
+    "y11x5p6x14Pp5x23p6"
+    "y12x19e"
+    "y14x6l5x26l5"
+    "y15x3p6x13p8x24p6"
+    "y16x9ex23e"
+    "y18x16l5"
+    "y19x2p6x12Bp11x27p3"
+    "y20x25e"
+    "y22x4l5x28l5"
+    "y23x0p9Bp23",
 #else
     // level 1
     "y7x8pep4Bp3x18p3ep2gp4x29pep2"
@@ -54,15 +53,15 @@ const char *levels[] = {
     "y6x21p5x28gp2ep2"
     "y8x21p4"
     "y9x21l5x4p2ep2x11gp9x30e"
-    "y10x17p2gp4x26ep2"
+    "y10x19gp4x26ep2"
     "y11x28p4"
     "y12x0gp2ep4"
     "y14x21gp2ep2"
-    "y15x3Bx4l8x30l6"
-    "y16x0p6ep2x29p3"
+    "y15x3x4l8x30l6"
+    "y16x0Bp6ep2x29p3"
     "y17x23ep2x27p2"
-    "y18x13l12x17Bl12x21p2"
-    "y19x11gp4ep4"
+    "y18x13l12x17l12x21p2"
+    "y19x11gp2Bp2ep4"
     "y20x24p2ep5"
     "y22x1l8x5p1ep2x28l4"
     "y23x0p4gp2x8vx11Pp5x18p4gp2Bp2ep6",
@@ -82,7 +81,7 @@ const char *levels[] = {
     "y19x0gp2Bp4x10p6x19p5ep4"
     "y20x30p2"
     "y22x3l5x12l17x22l5"
-    "y23x0ep6x8Pp6gp2vx19ep3Bp10"
+    "y23x0ep6x8Pp6gp2vx19ep3Bp10",
 
     // level 5
     "y4x18ep4gp2"
@@ -98,21 +97,20 @@ const char *levels[] = {
     "y19x0ep2Bp6ep2x14Bp5x21p4"
     "y20x19e"
     "y22x5l5x11l5x15l5x21l5"
-    "y23x0ep3x5p2gp2gp2Pp6x19gp2p2gp2x25vx28gp4"
+    "y23x0ep3x5p2gp2gp2Pp6x19gp2p2gp2x25vx28gp4",
 
-    // level 6 - WIP
+    // level 6
     "y6x27p3ep2"
     "y7x9ep2x13p2"
     "y8x5ex19ep6Bp4"
-    "y9x22l5"
-    "y11x0gp2Bp2gp6x11ex26p4ep2x27l7"
+    "y11x0gp2Bp2gp6x11ex22l7x26p4ep2x27l7"
     "y15x3p8gp2x19ep3Bp3ep4"
     "y16x27p3gp2"
-    "y18x22l6"
-    "y19x0Bp3x5p3ep2x19ep5"
-    "y20x6l12"
+    "y18x22l5"
+    "y19x0Bp4x6p3ep2x19ep5"
+    "y21x7l13"
     "y22x0l6x27l10"
-    "y23x0p3ep2x9p4Pp2vx18gp2gp2gp2x25e",
+    "y23x0p3ep2x11p2Pp2vx18gp2gp2gp2x25e",
 
     // level 7
     "y6x8ex12ex16e"
@@ -131,6 +129,18 @@ const char *levels[] = {
     "y23x4Bp4x11p3x27ex29v",
 
     // level 8
-    TEST_LEVEL,
-
+    "y5x5ex27e"
+    "y7x5p2x9p2x13Bp8x23p2x27p2"
+    "y8x7ex11ex21ex25e"
+    "y10x16l5"
+    "y11x5p6x14Pp5x23p6"
+    "y12x19e"
+    "y14x6l5x26l5"
+    "y15x3p6x13p8x24p6"
+    "y16x9ex23e"
+    "y18x16l5"
+    "y19x2p6x12Bp11x27p3"
+    "y20x25e"
+    "y22x4l5x28l5"
+    "y23x0p9Bp23",
 };
