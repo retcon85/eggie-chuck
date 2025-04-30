@@ -264,7 +264,10 @@ void model_game_player_down(void)
 
 void model_game_player_jump(void)
 {
-  if (pg->game_over && get_ready_counter == 0)
+  if (get_ready_counter > 0)
+    return;
+
+  if (pg->game_over)
   {
     next_player();
   }

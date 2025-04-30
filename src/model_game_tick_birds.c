@@ -40,8 +40,8 @@ inline void move_horizontally(struct character_t *bird)
   // if over ladder...
   if ((*tile & 0x18) == LADDER)
   {
-    // decide whether or not to climb (~25% chance)
-    if (!(prng_next() & 0x03))
+    // decide whether or not to climb (~75% chance)
+    if (prng_next() & 0x03)
     {
       bird->vx = 0;
       bird->is_climbing = true;
