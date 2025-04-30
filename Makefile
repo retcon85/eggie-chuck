@@ -30,11 +30,11 @@ SOURCEEXT := c
 HEADEREXT := h
 # the default entrypoint (where main function is defined), which must come first in the linker
 ENTRYPOINT := main
-SMSLIB_DIR := /usr/local/share/sdcc/lib/sms
-SMSINC_DIR := /usr/local/share/sdcc/include/sms
+SMSLIB_DIR := /opt/devkitsms/lib
+SMSINC_DIR := /opt/devkitsms/include
 INCLUDE_OPTIONS := $(patsubst %,-I %,$(SMSINC_DIR) $(SOURCEDIR) $(wildcard $(SOURCEDIR)**/))
 ifeq ("$(USEPSGLIB)", "true")
-PSGLIB := $(SMSLIB_DIR)/PSGlib.rel
+PSGLIB := $(SMSLIB_DIR)/PSGlib.lib
 PSGMACRO := -DUSEPSGLIB
 endif
 VERSION := $(file <VERSION)
